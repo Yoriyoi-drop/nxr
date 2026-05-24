@@ -1,0 +1,19 @@
+[package]
+name = "nxr-api"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+nxr-core = { path = "../nxr-core" }
+nxr-ql = { path = "../nxr-ql" }
+tonic = "0.12"
+prost = "0.13"
+tokio = { version = "1", features = ["full", "signal"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+log = "0.4"
+tower = "0.5"
+chrono = "0.4"
+
+[build-dependencies]
+tonic-build = "0.12"

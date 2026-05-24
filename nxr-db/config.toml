@@ -1,0 +1,35 @@
+# NXR Database Configuration
+db_path = "/var/nxr-db"
+wal_dir = "/var/nxr-db/wal"
+
+[vector]
+dimension = 4
+ef_construction = 200
+m_max = 16
+space = "cosine"
+segment_size_mb = 64
+hnsw_path = "/var/nxr-db/vectors/index.hnsw"
+segments_path = "/var/nxr-db/vectors/segments"
+
+[graph]
+nodes_path = "/var/nxr-db/graph/nodes.dat"
+edges_path = "/var/nxr-db/graph/edges.dat"
+adj_list_path = "/var/nxr-db/graph/adj_list.idx"
+labels_path = "/var/nxr-db/graph/labels.idx"
+
+[kv]
+hot_zone_mb = 2048
+warm_zone_mb = 51200
+hot_path = "/var/nxr-db/kv/hot.mem"
+cold_path = "/var/nxr-db/kv/cold"
+
+[index]
+btree_order = 128
+
+[pipeline]
+max_context_tokens = 128000
+memory_similarity_weight = 0.6
+memory_recency_weight = 0.25
+memory_importance_weight = 0.15
+gc_interval_hours = 24
+index_fragmentation_threshold = 0.3

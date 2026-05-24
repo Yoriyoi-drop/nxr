@@ -1,0 +1,11 @@
+[package]
+name = "nxr-sdk"
+version.workspace = true
+edition.workspace = true
+description = "High-level Rust SDK for NXR vector-graph database"
+
+[dependencies]
+nxr-core = { path = "../nxr-core" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = "0.4"

@@ -1,0 +1,15 @@
+{
+  "name": "nxr-js",
+  "version": "0.1.0",
+  "description": "Node.js bindings for NXR vector-graph database",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "napi": {
+    "name": "nxr-js",
+    "triples": {}
+  },
+  "scripts": {
+    "build": "napi build --release",
+    "build:debug": "napi build"
+  }
+}

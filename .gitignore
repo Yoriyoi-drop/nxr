@@ -1,0 +1,10 @@
+target/
+*.pyc
+__pycache__/
+.DS_Store
+node_modules/
+sdk/python/build/
+tools/nxr-cli/nxr
+**/*.swp
+*.log
+*.pid

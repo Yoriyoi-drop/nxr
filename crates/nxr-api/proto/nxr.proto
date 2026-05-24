@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+package nxr;
+
+service NxrService {
+  rpc Query(QueryRequest) returns (QueryResponse);
+  rpc VectorInsert(VectorInsertRequest) returns (VectorInsertResponse);
+  rpc VectorSearch(VectorSearchRequest) returns (VectorSearchResponse);
+  rpc GraphAddNode(GraphNodeRequest) returns (GraphNodeResponse);
+  rpc GraphAddEdge(GraphEdgeRequest) returns (GraphEdgeResponse);
+  rpc GraphTraverse(GraphTraverseRequest) returns (GraphTraverseResponse);
+  rpc KvSet(KvSetRequest) returns (KvSetResponse);
+  rpc KvGet(KvGetRequest) returns (KvGetResponse);
+  rpc Health(HealthRequest) returns (HealthResponse);
+}
+
+message QueryRequest {
+  string query = 1;
+}
+
+message QueryResponse {
+  repeated Column columns = 1;
+  repeated Row rows = 2;
+  uint64 elapsed_ms = 3;
+}
+
+message Column {
+  string name = 1;
+  string type = 2;
+}
+
+message Row {
+  repeated bytes values = 1;
+}
+
+message VectorInsertRequest {
+  uint64 id = 1;
+  repeated float vector = 2;
+  bytes metadata = 3;
+}
+
+message VectorInsertResponse {
+  bool success = 1;
+}
+
+message VectorSearchRequest {
+  repeated float query = 1;
+  uint32 k = 2;
+}
+
+message VectorSearchResponse {
+  repeated VectorResult results = 1;
+}
+
+message VectorResult {
+  uint64 id = 1;
+  float score = 2;
+}
+
+message GraphNodeRequest {
+  string label = 1;
+  map<string, string> properties = 2;
+}
+
+message GraphNodeResponse {
+  uint64 id = 1;
+}
+
+message GraphEdgeRequest {
+  uint64 from_node = 1;
+  uint64 to_node = 2;
+  string relation = 3;
+  float weight = 4;
+}
+
+message GraphEdgeResponse {
+  uint64 id = 1;
+}
+
+message GraphTraverseRequest {
+  string from_label = 1;
+  string relation = 2;
+  string to_label = 3;
+}
+
+message GraphTraverseResponse {
+  repeated TraverseResult results = 1;
+}
+
+message TraverseResult {
+  uint64 from_id = 1;
+  uint64 to_id = 2;
+  float weight = 3;
+}
+
+message KvSetRequest {
+  string key = 1;
+  bytes value = 2;
+  uint32 ttl = 3;
+}
+
+message KvSetResponse {
+  bool success = 1;
+}
+
+message KvGetRequest {
+  string key = 1;
+}
+
+message KvGetResponse {
+  bytes value = 1;
+  bool found = 2;
+}
+
+message HealthRequest {}
+
+message HealthResponse {
+  string status = 1;
+  uint64 uptime_secs = 2;
+  uint64 vector_count = 3;
+  uint64 graph_nodes = 4;
+  uint64 graph_edges = 5;
+  uint64 kv_entries = 6;
+}

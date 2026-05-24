@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  nxr-db:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      cache_from:
+        - nxr-db:latest
+    image: nxr-db:latest
+    container_name: nxr-db
+    restart: unless-stopped
+
+    ports:
+      - "9643:9643"
+
+    volumes:
+      # Persistensi data database
+      - nxr-data:/var/nxr-db
+      # Mount config dari host (opsional)
+      - ./nxr-db/config.toml:/var/nxr-db/config.toml:ro
+
+    environment:
+      - RUST_LOG=${RUST_LOG:-info}
+      - TZ=${TZ:-Asia/Jakarta}
+      - NXR_DB_PATH=/var/nxr-db
+      - NXR_BIND=0.0.0.0:9643
+
+    command: ["--db-path", "/var/nxr-db", "--bind", "0.0.0.0:9643"]
+
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 9643 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    deploy:
+      resources:
+        limits:
+          memory: ${NXR_MEM_LIMIT:-8G}
+          cpus: ${NXR_CPU_LIMIT:-4}
+        reservations:
+          memory: ${NXR_MEM_RESERVE:-2G}
+          cpus: ${NXR_CPU_RESERVE:-1}
+
+    networks:
+      - nxr-net
+
+  # ============================================================
+  # NXR CLI — alat bantu (opsional, via docker run --rm)
+  # ============================================================
+  nxr-cli:
+    image: nxr-db:latest
+    container_name: nxr-cli
+    entrypoint: ["nxr"]
+    network_mode: "service:nxr-db"
+    profiles:
+      - cli
+    depends_on:
+      nxr-db:
+        condition: service_healthy
+
+volumes:
+  nxr-data:
+    driver: local
+
+networks:
+  nxr-net:
+    driver: bridge
